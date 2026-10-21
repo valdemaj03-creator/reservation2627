@@ -21,7 +21,8 @@ public class SpringSecurityConfig {
         return http
                 .authorizeHttpRequests(auth -> { auth
                         .requestMatchers("/").permitAll()
-                        .requestMatchers("/login", "/login**", "/css/**", "/js/**", "/error").permitAll()
+                        .requestMatchers("/login", "/login**", "/css/**", "/js/**", "/error",
+                                "/forgot-password", "/reset-password", "/reset-success").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/user").hasRole("MEMBER")
                         .anyRequest().authenticated();
