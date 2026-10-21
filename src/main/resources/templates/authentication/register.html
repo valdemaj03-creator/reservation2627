@@ -44,6 +44,10 @@
                 <input type="password" th:field="*{confirmPassword}" required>
                 <div class="error" th:errors="*{confirmPassword}"></div>
             </div>
+
+            <div class="error" th:if="${#fields.hasGlobalErrors()}">
+                <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">Erreur globale</p>
+            </div>
             <div>
                 <label>Langue</label>
                 <select th:field="*{langue}">

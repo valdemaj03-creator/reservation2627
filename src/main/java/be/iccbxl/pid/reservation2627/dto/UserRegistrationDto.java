@@ -4,9 +4,12 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import be.iccbxl.pid.reservation2627.validation.PasswordConfirmable;
+import be.iccbxl.pid.reservation2627.validation.PasswordMatches;
 
 @Data
-public class UserRegistrationDto {
+@PasswordMatches
+public class UserRegistrationDto implements PasswordConfirmable {
     @NotBlank(message = "Le prénom est obligatoire")
     private String firstname;
 
@@ -30,4 +33,6 @@ public class UserRegistrationDto {
 
     @NotBlank(message = "La langue est obligatoire")
     private String langue;
+
+
 }
