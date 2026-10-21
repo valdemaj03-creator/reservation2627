@@ -7,9 +7,16 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
 
     @Override
     public boolean isValid(PasswordConfirmable dto, ConstraintValidatorContext context) {
-        if (dto.getPassword() == null || dto.getConfirmPassword() == null) {
-            return false;
+        String pwd = dto.getPassword();
+        String confirm = dto.getConfirmPassword();
+
+        // Si les deux champs sont vides, le mot de passe n'est pas modifié => OK
+        if ((pwd == null || pwd.isBlank()) && (confirm == null || confirm.isBlank())) {
+            return true;
         }
-        return dto.getPassword().equals(dto.getConfirmPassword());
+
+        // Sinon, il faut qu'ils soient identiques
+        if (pwd == null) return false;
+        return pwd.equals(confirm);
     }
 }
