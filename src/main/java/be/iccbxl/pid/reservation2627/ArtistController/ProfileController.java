@@ -17,6 +17,11 @@ import be.iccbxl.pid.reservation2627.model.User;
 import be.iccbxl.pid.reservation2627.repository.UserRepository;
 import be.iccbxl.pid.reservation2627.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.web.bind.annotation.DeleteMapping;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class ProfileController {
@@ -81,5 +86,29 @@ public class ProfileController {
         userService.updateUserFromDto(dto);
         redirAttrs.addFlashAttribute("successMessage", "Profil mis à jour avec succès !");
         return "redirect:/profile";
+    }
+    @DeleteMapping("/profile/delete")
+    public String deleteAccount(HttpServletRequest request, HttpServletResponse response,
+                                RedirectAttributes redirAttrs) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String login = auth.getName();
+
+        if (request.isUserInRole("ADMIN")) {
+            redirAttrs.addFlashAttribute("errorMessage", "Pas de suppression de son propre compte admin !");
+            return "redirect:/profile";
+        }
+
+        // Supprimer l'utilisateur courant
+        userService.deleteByLogin(login);
+
+        // Déconnecter l'utilisateur et invalider la session
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+
+        SecurityContextHolder.clearContext();
+
+        redirAttrs.addFlashAttribute("successMessage", "Votre compte a été supprimé avec succès.");
+        return "redirect:/";
     }
 }
