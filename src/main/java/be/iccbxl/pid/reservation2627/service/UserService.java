@@ -11,6 +11,7 @@ import be.iccbxl.pid.reservation2627.dto.UserRegistrationDto;
 import be.iccbxl.pid.reservation2627.model.User;
 import be.iccbxl.pid.reservation2627.model.UserRole;
 import be.iccbxl.pid.reservation2627.repository.UserRepository;
+import be.iccbxl.pid.reservation2627.dto.UserProfileDto;
 
 @Service
 public class UserService {
@@ -54,6 +55,22 @@ public class UserService {
     }
 
     public void updateUser(long id, User user) {
+        userRepository.save(user);
+    }
+    public void updateUserFromDto(UserProfileDto dto) {
+        User user = userRepository.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+
+        user.setFirstname(dto.getFirstname());
+        user.setLastname(dto.getLastname());
+        user.setEmail(dto.getEmail());
+        user.setLangue(dto.getLangue());
+
+        // Si un nouveau mot de passe est fourni et validé
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
         userRepository.save(user);
     }
 
